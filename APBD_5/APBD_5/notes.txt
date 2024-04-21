@@ -1,0 +1,8 @@
+Nuget package System.Data.SqlClient
+com.Parameters.AddWith - dodanie parametrów
+
+Select scope identity - zwraca id affected po operacji
+
+Dto - w komunikacji wewnątrz aplikacji, zwykły obiekt (animal) wtedy kiedy komunikujemy sie z DB czyli w Repository
+controller -> service -> repo -> Db   (injections)
+zamiana typu animal na animalDTO w service

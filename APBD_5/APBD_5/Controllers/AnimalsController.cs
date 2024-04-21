@@ -1,6 +1,8 @@
 ﻿using System.Data.SqlClient;
+using System.Net.Http.Headers;
 using APBD_5.DTOs;
 using APBD_5.Models;
+using APBD_5.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APBD_5.Controllers;
@@ -9,39 +11,46 @@ namespace APBD_5.Controllers;
 [ApiController]
 public class AnimalsController : ControllerBase
 {
+
+    private IAnimalsService _animalsService;
+    public AnimalsController(IAnimalsService animalsService)
+    {
+        _animalsService = animalsService;
+    }
+
     [HttpGet]
     public ActionResult<IEnumerable<AnimalDTO>> GetAnimals()
     {
-        using SqlConnection connection = new SqlConnection("Data Source=db-mssql;Initial Catalog=s24695;Integrated Security=True"); // Nuget package System.Data.SqlClient
+        var animals = _animalsService.GetAnimals();
+        return Ok(animals);
+    }
 
-        using SqlCommand command = new SqlCommand();
+    [HttpGet("{id:int}")]
+    public ActionResult<IEnumerable<Animal>> GetAnimalById(int id)
+    {
+        var animal = _animalsService.GetAnimalById(id);
+        return Ok(animal);
+    }
 
-        command.Connection = connection;
-        command.CommandText = "SELECT * FROM Animals";
-        
-        connection.Open();
+    [HttpPost]
+    public IActionResult CreateAnimal(Animal animal)
+    {
+        var animals = _animalsService.CreateAnimal(animal);
+        return StatusCode(StatusCodes.Status201Created,animals);
+    }
+    
+    [HttpDelete]
+    public IActionResult DeleteAnimal(int id)
+    {
+        var animalToDelete = _animalsService.DeleteAnimal(id);
+        return NoContent();
+    }
 
-        SqlDataReader reader = command.ExecuteReader();
-
-        List<AnimalDTO> animals = new List<AnimalDTO>();
-
-        while (reader.Read())
-        {
-            AnimalDTO animal = new AnimalDTO();
-            animal.Id = (int)reader["Id"];
-            animal.Name = (string)reader["Name"];
-            animal.Description = (string)reader["Description"];
-            animal.Category = (string)reader["Category"];
-            animal.Area = (string)reader["Area"];
-        }
-        
-        return Ok();
+    [HttpPut]
+    public IActionResult UpdateAnimal(Animal animal)
+    {
+        var animalToUpdate = _animalsService.UpdateAnimal(animal);
+        return Ok(animalToUpdate);
     }
 }
-
-//com.Parameters.AddWith
-//Select scope identity - zwraca id affected po operacji
-//Dto - w komunikacji wewnątrz aplikacji, zwykły obiekt (animal) wtedy kiedy komunikujemy sie z DB czyli w Repository
-// controller -> service -> repo -> Db   (injections)
-//zamiana typu animal na animalDTO w service
 
