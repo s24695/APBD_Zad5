@@ -13,23 +13,24 @@ public class AnimalsController : ControllerBase
 {
 
     private IAnimalsService _animalsService;
+
     public AnimalsController(IAnimalsService animalsService)
     {
         _animalsService = animalsService;
     }
 
-    [HttpGet]
-    public ActionResult<IEnumerable<AnimalDTO>> GetAnimals()
-    {
-        var animals = _animalsService.GetAnimals();
-        return Ok(animals);
-    }
+    // [HttpGet]
+    // public ActionResult<IEnumerable<Animal>> GetAnimals()
+    // {
+    //     var animals = _animalsService.GetAnimals();
+    //     return Ok(animals);
+    // }
 
-    [HttpGet("{id:int}")]
-    public ActionResult<IEnumerable<Animal>> GetAnimalById(int id)
+    [HttpGet]
+    public ActionResult<IEnumerable<Animal>> GetAnimalsOrderBy(string orderBy)
     {
-        var animal = _animalsService.GetAnimalById(id);
-        return Ok(animal);
+        var animalsOrderby = _animalsService.GetAnimalsOrderBy(orderBy);
+        return Ok(animalsOrderby);
     }
 
     [HttpPost]
@@ -39,14 +40,14 @@ public class AnimalsController : ControllerBase
         return StatusCode(StatusCodes.Status201Created,animals);
     }
     
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public IActionResult DeleteAnimal(int id)
     {
         var animalToDelete = _animalsService.DeleteAnimal(id);
         return NoContent();
     }
 
-    [HttpPut]
+    [HttpPut("{id:int}")]
     public IActionResult UpdateAnimal(Animal animal)
     {
         var animalToUpdate = _animalsService.UpdateAnimal(animal);

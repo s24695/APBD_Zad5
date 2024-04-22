@@ -5,9 +5,9 @@ namespace APBD_5.Repositories;
 
 public interface IAnimalsRepository
 {
-    IEnumerable<Animal> GetAnimals();
+    // IEnumerable<Animal> GetAnimals();
 
-    Animal GetAnimalById(int id);
+    IEnumerable<Animal> GetAnimalsOrderBy(string orderBy);
 
     public int CreateAnimal(Animal animal);
     

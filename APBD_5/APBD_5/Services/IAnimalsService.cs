@@ -4,10 +4,9 @@ namespace APBD_5.Services;
 
 public interface IAnimalsService
 { 
-    IEnumerable<Animal> GetAnimals();
+    // IEnumerable<Animal> GetAnimals();
 
-    Animal GetAnimalById(int id);
-
+    IEnumerable<Animal> GetAnimalsOrderBy(string orderBy);
     int CreateAnimal(Animal animal);
 
     int DeleteAnimal(int id);

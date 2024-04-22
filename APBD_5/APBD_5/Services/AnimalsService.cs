@@ -12,17 +12,17 @@ public class AnimalsService : IAnimalsService
         _animalsRepository = animalsRepository;
     }
     
-    public IEnumerable<Animal> GetAnimals()
-    {
-        //Business logic
-        return _animalsRepository.GetAnimals();
-    }
+    // public IEnumerable<Animal> GetAnimals()
+    // {
+    //     //Business logic
+    //     return _animalsRepository.GetAnimals();
+    // }
 
-    public Animal GetAnimalById(int id)
+    public IEnumerable<Animal> GetAnimalsOrderBy(string orderBy)
     {
-        return _animalsRepository.GetAnimalById(id);
+        return _animalsRepository.GetAnimalsOrderBy(orderBy);
     }
-
+    
     public int CreateAnimal(Animal animal)
     {
         return _animalsRepository.CreateAnimal(animal);

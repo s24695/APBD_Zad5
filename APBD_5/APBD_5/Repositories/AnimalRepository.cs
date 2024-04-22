@@ -1,6 +1,7 @@
 ﻿using System.Data.SqlClient;
 using System.Security.Cryptography;
 using APBD_5.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace APBD_5.Repositories;
 
@@ -14,17 +15,58 @@ public class AnimalRepository : IAnimalsRepository
         _configuration = configuration;
     }
 
-    public IEnumerable<Animal> GetAnimals()
+    // public IEnumerable<Animal> GetAnimals()
+    // {
+    //     using var con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
+    //     con.Open();
+    //
+    //     using var cmd = new SqlCommand();
+    //     cmd.Connection = con;
+    //     cmd.CommandText = "SELECT * FROM Animals";
+    //
+    //     var dr = cmd.ExecuteReader();
+    //     
+    //     var animals = new List<Animal>();
+    //     while (dr.Read())
+    //     {
+    //         var animal = new Animal();
+    //
+    //         animal.Id = (int)dr["Id"];
+    //         animal.Name = dr["Name"].ToString();
+    //         animal.Description = dr["Description"].ToString();
+    //         animal.Category = dr["Category"].ToString();
+    //         animal.Area = dr["Area"].ToString();
+    //         
+    //         animals.Add(animal);
+    //     }
+    //     return animals;
+    // }
+
+    public IEnumerable<Animal> GetAnimalsOrderBy(string orderBy)
     {
         using var con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
         con.Open();
 
         using var cmd = new SqlCommand();
         cmd.Connection = con;
-        cmd.CommandText = "SELECT * FROM Animals";
+        
+        switch (orderBy.ToLower())
+        {
+            case "name":
+                cmd.CommandText = "SELECT * FROM Animals Order By Name";
+                break;
+            case "description":
+                cmd.CommandText = "SELECT * FROM Animals Order By Description";
+                break;
+            case "category":
+                cmd.CommandText = "SELECT * FROM Animals Order By Category";
+                break;
+            case "area":
+                cmd.CommandText = "SELECT * FROM Animals Order By Area";
+                break;
+        }
 
         var dr = cmd.ExecuteReader();
-        
         var animals = new List<Animal>();
         while (dr.Read())
         {
@@ -39,32 +81,6 @@ public class AnimalRepository : IAnimalsRepository
             animals.Add(animal);
         }
         return animals;
-    }
-
-    public Animal GetAnimalById(int idAnimal)
-    {
-        using var con = new SqlConnection(_configuration["ConnectionStrings:DefaultConnection"]);
-        con.Open();
-
-        using var cmd = new SqlCommand();
-        cmd.Connection = con;
-        cmd.CommandText = "SELECT * FROM ANIMALS WHERE Id = @Id";
-        cmd.Parameters.AddWithValue("@Id", idAnimal);
-
-        var dr = cmd.ExecuteReader();
-
-        if (!dr.Read()) return null;
-
-        var animal = new Animal
-        {
-            Id = (int)dr["Id"],
-            Name = dr["Name"].ToString(),
-            Description = dr["Description"].ToString(),
-            Category = dr["Category"].ToString(),
-            Area = dr["Area"].ToString()
-        };
-        
-        return animal;
     }
     
     public int CreateAnimal(Animal animal)
